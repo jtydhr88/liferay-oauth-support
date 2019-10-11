@@ -1,0 +1,11 @@
+Bundle-Name: oauth-connection-service
+Bundle-SymbolicName: com.liferay.oauthlogin.service
+Bundle-Version: 1.0.0
+Liferay-Require-SchemaVersion: 1.0.0
+Liferay-Service: true
+Export-Package: \
+	com.liferay.oauthlogin.model.impl,\
+	com.liferay.oauthlogin.service.base,\
+	com.liferay.oauthlogin.service.impl,\
+	com.liferay.oauthlogin.service.persistence.impl
+-dsannotations-options: inherit

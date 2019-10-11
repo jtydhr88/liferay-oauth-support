@@ -1,0 +1,9 @@
+dependencies {
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel"
+	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations"
+    compileOnly 'javax.servlet:javax.servlet-api'
+	compileOnly group: "javax.portlet", name: "portlet-api"
+
+	compileOnly project(":modules:oauth-connection:oauth-connection-api")
+	compileOnly project(":modules:oauth-connection:oauth-connection-service")
+}

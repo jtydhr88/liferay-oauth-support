@@ -1,0 +1,12 @@
+Bundle-Name: oauth-connection-api
+Bundle-SymbolicName: com.liferay.oauthlogin.api
+Bundle-Version: 1.0.0
+-check: EXPORTS
+Export-Package: \
+	com.liferay.oauthlogin.exception,\
+	com.liferay.oauthlogin.model,\
+	com.liferay.oauthlogin.service,\
+	com.liferay.oauthlogin.service.persistence,\
+	com.liferay.oauthlogin.util,\
+	com.liferay.portal.kernel.oauth.terry
+-includeresource: META-INF/service.xml=../oauth-connection-service/service.xml, @./libs/scribe-1.3.3.jar

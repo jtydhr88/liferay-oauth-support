@@ -1,0 +1,3 @@
+Bundle-Name: oauth-service
+Bundle-SymbolicName: com.liferay.oauth.service
+Bundle-Version: 1.0.0
