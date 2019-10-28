@@ -1,0 +1,4 @@
+Bundle-Name: tx-rest
+Bundle-SymbolicName: tx.rest
+Bundle-Version: 1.0.0
+Liferay-Configuration-Path: /configuration
