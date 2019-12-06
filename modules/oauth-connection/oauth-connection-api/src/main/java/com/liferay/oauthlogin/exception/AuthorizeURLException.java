@@ -13,7 +13,7 @@
  */
 package com.liferay.oauthlogin.exception;
 
-import org.osgi.annotation.versioning.ProviderType;
+import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.exception.PortalException;
 

@@ -14,14 +14,18 @@
 
 package com.liferay.oauthlogin.model;
 
+import aQute.bnd.annotation.ProviderType;
+
+import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.portal.kernel.model.ModelWrapper;
-import com.liferay.portal.kernel.model.wrapper.BaseModelWrapper;
+import com.liferay.portal.kernel.service.ServiceContext;
+
+import java.io.Serializable;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.osgi.annotation.versioning.ProviderType;
+import java.util.Objects;
 
 /**
  * <p>
@@ -34,11 +38,20 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public class OAuthConnectionWrapper
-	extends BaseModelWrapper<OAuthConnection>
 	implements OAuthConnection, ModelWrapper<OAuthConnection> {
 
 	public OAuthConnectionWrapper(OAuthConnection oAuthConnection) {
-		super(oAuthConnection);
+		_oAuthConnection = oAuthConnection;
+	}
+
+	@Override
+	public Class<?> getModelClass() {
+		return OAuthConnection.class;
+	}
+
+	@Override
+	public String getModelClassName() {
+		return OAuthConnection.class.getName();
 	}
 
 	@Override
@@ -242,6 +255,17 @@ public class OAuthConnectionWrapper
 		}
 	}
 
+	@Override
+	public Object clone() {
+		return new OAuthConnectionWrapper(
+			(OAuthConnection)_oAuthConnection.clone());
+	}
+
+	@Override
+	public int compareTo(OAuthConnection oAuthConnection) {
+		return _oAuthConnection.compareTo(oAuthConnection);
+	}
+
 	/**
 	 * Returns the access token extractor type of this o auth connection.
 	 *
@@ -249,7 +273,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public int getAccessTokenExtractorType() {
-		return model.getAccessTokenExtractorType();
+		return _oAuthConnection.getAccessTokenExtractorType();
 	}
 
 	/**
@@ -259,7 +283,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public String getAccessTokenURL() {
-		return model.getAccessTokenURL();
+		return _oAuthConnection.getAccessTokenURL();
 	}
 
 	/**
@@ -269,7 +293,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public int getAccessTokenVerb() {
-		return model.getAccessTokenVerb();
+		return _oAuthConnection.getAccessTokenVerb();
 	}
 
 	/**
@@ -279,7 +303,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public String getAuthorizeURL() {
-		return model.getAuthorizeURL();
+		return _oAuthConnection.getAuthorizeURL();
 	}
 
 	/**
@@ -289,7 +313,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public long getCompanyId() {
-		return model.getCompanyId();
+		return _oAuthConnection.getCompanyId();
 	}
 
 	/**
@@ -299,7 +323,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public Date getCreateDate() {
-		return model.getCreateDate();
+		return _oAuthConnection.getCreateDate();
 	}
 
 	/**
@@ -309,7 +333,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public String getDescription() {
-		return model.getDescription();
+		return _oAuthConnection.getDescription();
 	}
 
 	/**
@@ -319,7 +343,12 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public boolean getEnabled() {
-		return model.getEnabled();
+		return _oAuthConnection.getEnabled();
+	}
+
+	@Override
+	public ExpandoBridge getExpandoBridge() {
+		return _oAuthConnection.getExpandoBridge();
 	}
 
 	/**
@@ -329,7 +358,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public long getIconId() {
-		return model.getIconId();
+		return _oAuthConnection.getIconId();
 	}
 
 	/**
@@ -339,7 +368,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public String getKey() {
-		return model.getKey();
+		return _oAuthConnection.getKey();
 	}
 
 	/**
@@ -349,7 +378,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public Date getModifiedDate() {
-		return model.getModifiedDate();
+		return _oAuthConnection.getModifiedDate();
 	}
 
 	/**
@@ -359,7 +388,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public String getName() {
-		return model.getName();
+		return _oAuthConnection.getName();
 	}
 
 	/**
@@ -369,7 +398,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public long getOAuthConnectionId() {
-		return model.getOAuthConnectionId();
+		return _oAuthConnection.getOAuthConnectionId();
 	}
 
 	/**
@@ -379,7 +408,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public int getOAuthVersion() {
-		return model.getOAuthVersion();
+		return _oAuthConnection.getOAuthVersion();
 	}
 
 	/**
@@ -389,7 +418,12 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public long getPrimaryKey() {
-		return model.getPrimaryKey();
+		return _oAuthConnection.getPrimaryKey();
+	}
+
+	@Override
+	public Serializable getPrimaryKeyObj() {
+		return _oAuthConnection.getPrimaryKeyObj();
 	}
 
 	/**
@@ -399,7 +433,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public String getRedirectURL() {
-		return model.getRedirectURL();
+		return _oAuthConnection.getRedirectURL();
 	}
 
 	/**
@@ -409,7 +443,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public String getRequestTokenURL() {
-		return model.getRequestTokenURL();
+		return _oAuthConnection.getRequestTokenURL();
 	}
 
 	/**
@@ -419,7 +453,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public int getRequestTokenVerb() {
-		return model.getRequestTokenVerb();
+		return _oAuthConnection.getRequestTokenVerb();
 	}
 
 	/**
@@ -429,7 +463,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public String getScope() {
-		return model.getScope();
+		return _oAuthConnection.getScope();
 	}
 
 	/**
@@ -439,7 +473,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public String getSecret() {
-		return model.getSecret();
+		return _oAuthConnection.getSecret();
 	}
 
 	/**
@@ -449,7 +483,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public int getSignatureServiceType() {
-		return model.getSignatureServiceType();
+		return _oAuthConnection.getSignatureServiceType();
 	}
 
 	/**
@@ -459,7 +493,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public String getSocialAccountIdField() {
-		return model.getSocialAccountIdField();
+		return _oAuthConnection.getSocialAccountIdField();
 	}
 
 	/**
@@ -469,7 +503,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public String getSocialAccountIdScript() {
-		return model.getSocialAccountIdScript();
+		return _oAuthConnection.getSocialAccountIdScript();
 	}
 
 	/**
@@ -479,7 +513,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public int getSocialAccountIdType() {
-		return model.getSocialAccountIdType();
+		return _oAuthConnection.getSocialAccountIdType();
 	}
 
 	/**
@@ -489,7 +523,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public String getSocialAccountIdURL() {
-		return model.getSocialAccountIdURL();
+		return _oAuthConnection.getSocialAccountIdURL();
 	}
 
 	/**
@@ -499,7 +533,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public int getSocialAccountIdURLVerb() {
-		return model.getSocialAccountIdURLVerb();
+		return _oAuthConnection.getSocialAccountIdURLVerb();
 	}
 
 	/**
@@ -509,7 +543,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public long getUserId() {
-		return model.getUserId();
+		return _oAuthConnection.getUserId();
 	}
 
 	/**
@@ -519,7 +553,17 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public String getUserUuid() {
-		return model.getUserUuid();
+		return _oAuthConnection.getUserUuid();
+	}
+
+	@Override
+	public int hashCode() {
+		return _oAuthConnection.hashCode();
+	}
+
+	@Override
+	public boolean isCachedModel() {
+		return _oAuthConnection.isCachedModel();
 	}
 
 	/**
@@ -529,12 +573,22 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public boolean isEnabled() {
-		return model.isEnabled();
+		return _oAuthConnection.isEnabled();
+	}
+
+	@Override
+	public boolean isEscapedModel() {
+		return _oAuthConnection.isEscapedModel();
+	}
+
+	@Override
+	public boolean isNew() {
+		return _oAuthConnection.isNew();
 	}
 
 	@Override
 	public void persist() {
-		model.persist();
+		_oAuthConnection.persist();
 	}
 
 	/**
@@ -544,7 +598,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setAccessTokenExtractorType(int accessTokenExtractorType) {
-		model.setAccessTokenExtractorType(accessTokenExtractorType);
+		_oAuthConnection.setAccessTokenExtractorType(accessTokenExtractorType);
 	}
 
 	/**
@@ -554,7 +608,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setAccessTokenURL(String accessTokenURL) {
-		model.setAccessTokenURL(accessTokenURL);
+		_oAuthConnection.setAccessTokenURL(accessTokenURL);
 	}
 
 	/**
@@ -564,7 +618,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setAccessTokenVerb(int accessTokenVerb) {
-		model.setAccessTokenVerb(accessTokenVerb);
+		_oAuthConnection.setAccessTokenVerb(accessTokenVerb);
 	}
 
 	/**
@@ -574,7 +628,12 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setAuthorizeURL(String authorizeURL) {
-		model.setAuthorizeURL(authorizeURL);
+		_oAuthConnection.setAuthorizeURL(authorizeURL);
+	}
+
+	@Override
+	public void setCachedModel(boolean cachedModel) {
+		_oAuthConnection.setCachedModel(cachedModel);
 	}
 
 	/**
@@ -584,7 +643,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setCompanyId(long companyId) {
-		model.setCompanyId(companyId);
+		_oAuthConnection.setCompanyId(companyId);
 	}
 
 	/**
@@ -594,7 +653,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setCreateDate(Date createDate) {
-		model.setCreateDate(createDate);
+		_oAuthConnection.setCreateDate(createDate);
 	}
 
 	/**
@@ -604,7 +663,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setDescription(String description) {
-		model.setDescription(description);
+		_oAuthConnection.setDescription(description);
 	}
 
 	/**
@@ -614,7 +673,24 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setEnabled(boolean enabled) {
-		model.setEnabled(enabled);
+		_oAuthConnection.setEnabled(enabled);
+	}
+
+	@Override
+	public void setExpandoBridgeAttributes(
+		com.liferay.portal.kernel.model.BaseModel<?> baseModel) {
+
+		_oAuthConnection.setExpandoBridgeAttributes(baseModel);
+	}
+
+	@Override
+	public void setExpandoBridgeAttributes(ExpandoBridge expandoBridge) {
+		_oAuthConnection.setExpandoBridgeAttributes(expandoBridge);
+	}
+
+	@Override
+	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
+		_oAuthConnection.setExpandoBridgeAttributes(serviceContext);
 	}
 
 	/**
@@ -624,7 +700,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setIconId(long iconId) {
-		model.setIconId(iconId);
+		_oAuthConnection.setIconId(iconId);
 	}
 
 	/**
@@ -634,7 +710,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setKey(String key) {
-		model.setKey(key);
+		_oAuthConnection.setKey(key);
 	}
 
 	/**
@@ -644,7 +720,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setModifiedDate(Date modifiedDate) {
-		model.setModifiedDate(modifiedDate);
+		_oAuthConnection.setModifiedDate(modifiedDate);
 	}
 
 	/**
@@ -654,7 +730,12 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setName(String name) {
-		model.setName(name);
+		_oAuthConnection.setName(name);
+	}
+
+	@Override
+	public void setNew(boolean n) {
+		_oAuthConnection.setNew(n);
 	}
 
 	/**
@@ -664,7 +745,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setOAuthConnectionId(long oAuthConnectionId) {
-		model.setOAuthConnectionId(oAuthConnectionId);
+		_oAuthConnection.setOAuthConnectionId(oAuthConnectionId);
 	}
 
 	/**
@@ -674,7 +755,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setOAuthVersion(int oAuthVersion) {
-		model.setOAuthVersion(oAuthVersion);
+		_oAuthConnection.setOAuthVersion(oAuthVersion);
 	}
 
 	/**
@@ -684,7 +765,12 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setPrimaryKey(long primaryKey) {
-		model.setPrimaryKey(primaryKey);
+		_oAuthConnection.setPrimaryKey(primaryKey);
+	}
+
+	@Override
+	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
+		_oAuthConnection.setPrimaryKeyObj(primaryKeyObj);
 	}
 
 	/**
@@ -694,7 +780,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setRedirectURL(String redirectURL) {
-		model.setRedirectURL(redirectURL);
+		_oAuthConnection.setRedirectURL(redirectURL);
 	}
 
 	/**
@@ -704,7 +790,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setRequestTokenURL(String requestTokenURL) {
-		model.setRequestTokenURL(requestTokenURL);
+		_oAuthConnection.setRequestTokenURL(requestTokenURL);
 	}
 
 	/**
@@ -714,7 +800,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setRequestTokenVerb(int requestTokenVerb) {
-		model.setRequestTokenVerb(requestTokenVerb);
+		_oAuthConnection.setRequestTokenVerb(requestTokenVerb);
 	}
 
 	/**
@@ -724,7 +810,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setScope(String scope) {
-		model.setScope(scope);
+		_oAuthConnection.setScope(scope);
 	}
 
 	/**
@@ -734,7 +820,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setSecret(String secret) {
-		model.setSecret(secret);
+		_oAuthConnection.setSecret(secret);
 	}
 
 	/**
@@ -744,7 +830,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setSignatureServiceType(int signatureServiceType) {
-		model.setSignatureServiceType(signatureServiceType);
+		_oAuthConnection.setSignatureServiceType(signatureServiceType);
 	}
 
 	/**
@@ -754,7 +840,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setSocialAccountIdField(String socialAccountIdField) {
-		model.setSocialAccountIdField(socialAccountIdField);
+		_oAuthConnection.setSocialAccountIdField(socialAccountIdField);
 	}
 
 	/**
@@ -764,7 +850,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setSocialAccountIdScript(String socialAccountIdScript) {
-		model.setSocialAccountIdScript(socialAccountIdScript);
+		_oAuthConnection.setSocialAccountIdScript(socialAccountIdScript);
 	}
 
 	/**
@@ -774,7 +860,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setSocialAccountIdType(int socialAccountIdType) {
-		model.setSocialAccountIdType(socialAccountIdType);
+		_oAuthConnection.setSocialAccountIdType(socialAccountIdType);
 	}
 
 	/**
@@ -784,7 +870,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setSocialAccountIdURL(String socialAccountIdURL) {
-		model.setSocialAccountIdURL(socialAccountIdURL);
+		_oAuthConnection.setSocialAccountIdURL(socialAccountIdURL);
 	}
 
 	/**
@@ -794,7 +880,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setSocialAccountIdURLVerb(int socialAccountIdURLVerb) {
-		model.setSocialAccountIdURLVerb(socialAccountIdURLVerb);
+		_oAuthConnection.setSocialAccountIdURLVerb(socialAccountIdURLVerb);
 	}
 
 	/**
@@ -804,7 +890,7 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setUserId(long userId) {
-		model.setUserId(userId);
+		_oAuthConnection.setUserId(userId);
 	}
 
 	/**
@@ -814,12 +900,78 @@ public class OAuthConnectionWrapper
 	 */
 	@Override
 	public void setUserUuid(String userUuid) {
-		model.setUserUuid(userUuid);
+		_oAuthConnection.setUserUuid(userUuid);
 	}
 
 	@Override
-	protected OAuthConnectionWrapper wrap(OAuthConnection oAuthConnection) {
-		return new OAuthConnectionWrapper(oAuthConnection);
+	public com.liferay.portal.kernel.model.CacheModel<OAuthConnection>
+		toCacheModel() {
+
+		return _oAuthConnection.toCacheModel();
 	}
+
+	@Override
+	public OAuthConnection toEscapedModel() {
+		return new OAuthConnectionWrapper(_oAuthConnection.toEscapedModel());
+	}
+
+	@Override
+	public String toString() {
+		return _oAuthConnection.toString();
+	}
+
+	@Override
+	public OAuthConnection toUnescapedModel() {
+		return new OAuthConnectionWrapper(_oAuthConnection.toUnescapedModel());
+	}
+
+	@Override
+	public String toXmlString() {
+		return _oAuthConnection.toXmlString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof OAuthConnectionWrapper)) {
+			return false;
+		}
+
+		OAuthConnectionWrapper oAuthConnectionWrapper =
+			(OAuthConnectionWrapper)obj;
+
+		if (Objects.equals(
+				_oAuthConnection, oAuthConnectionWrapper._oAuthConnection)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public OAuthConnection getWrappedModel() {
+		return _oAuthConnection;
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return _oAuthConnection.isEntityCacheEnabled();
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return _oAuthConnection.isFinderCacheEnabled();
+	}
+
+	@Override
+	public void resetOriginalValues() {
+		_oAuthConnection.resetOriginalValues();
+	}
+
+	private final OAuthConnection _oAuthConnection;
 
 }

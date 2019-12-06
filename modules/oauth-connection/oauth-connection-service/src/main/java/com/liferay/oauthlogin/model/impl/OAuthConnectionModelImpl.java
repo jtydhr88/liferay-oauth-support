@@ -14,11 +14,12 @@
 
 package com.liferay.oauthlogin.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.oauthlogin.model.OAuthConnection;
 import com.liferay.oauthlogin.model.OAuthConnectionModel;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.CacheModel;
@@ -28,7 +29,9 @@ import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.DateUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 
 import java.io.Serializable;
 
@@ -44,8 +47,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-
-import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * The base model implementation for the OAuthConnection service. Represents a row in the &quot;OAuthLogin_OAuthConnection&quot; database table, with each column mapped to a property of this class.
@@ -138,17 +139,28 @@ public class OAuthConnectionModelImpl
 
 	public static final String TX_MANAGER = "liferayTransactionManager";
 
+	public static final boolean ENTITY_CACHE_ENABLED = GetterUtil.getBoolean(
+		com.liferay.oauthlogin.service.util.ServiceProps.get(
+			"value.object.entity.cache.enabled.com.liferay.oauthlogin.model.OAuthConnection"),
+		true);
+
+	public static final boolean FINDER_CACHE_ENABLED = GetterUtil.getBoolean(
+		com.liferay.oauthlogin.service.util.ServiceProps.get(
+			"value.object.finder.cache.enabled.com.liferay.oauthlogin.model.OAuthConnection"),
+		true);
+
+	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(
+		com.liferay.oauthlogin.service.util.ServiceProps.get(
+			"value.object.column.bitmask.enabled.com.liferay.oauthlogin.model.OAuthConnection"),
+		true);
+
 	public static final long ENABLED_COLUMN_BITMASK = 1L;
 
 	public static final long CREATEDATE_COLUMN_BITMASK = 2L;
 
-	public static void setEntityCacheEnabled(boolean entityCacheEnabled) {
-		_entityCacheEnabled = entityCacheEnabled;
-	}
-
-	public static void setFinderCacheEnabled(boolean finderCacheEnabled) {
-		_finderCacheEnabled = finderCacheEnabled;
-	}
+	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
+		com.liferay.oauthlogin.service.util.ServiceProps.get(
+			"lock.expiration.time.com.liferay.oauthlogin.model.OAuthConnection"));
 
 	public OAuthConnectionModelImpl() {
 	}
@@ -277,147 +289,594 @@ public class OAuthConnectionModelImpl
 			new LinkedHashMap<String, BiConsumer<OAuthConnection, ?>>();
 
 		attributeGetterFunctions.put(
-			"oAuthConnectionId", OAuthConnection::getOAuthConnectionId);
+			"oAuthConnectionId",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getOAuthConnectionId();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"oAuthConnectionId",
-			(BiConsumer<OAuthConnection, Long>)
-				OAuthConnection::setOAuthConnectionId);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object oAuthConnectionId) {
+
+					oAuthConnection.setOAuthConnectionId(
+						(Long)oAuthConnectionId);
+				}
+
+			});
 		attributeGetterFunctions.put(
-			"companyId", OAuthConnection::getCompanyId);
+			"companyId",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getCompanyId();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"companyId",
-			(BiConsumer<OAuthConnection, Long>)OAuthConnection::setCompanyId);
-		attributeGetterFunctions.put("userId", OAuthConnection::getUserId);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object companyId) {
+
+					oAuthConnection.setCompanyId((Long)companyId);
+				}
+
+			});
+		attributeGetterFunctions.put(
+			"userId",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getUserId();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"userId",
-			(BiConsumer<OAuthConnection, Long>)OAuthConnection::setUserId);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object userId) {
+
+					oAuthConnection.setUserId((Long)userId);
+				}
+
+			});
 		attributeGetterFunctions.put(
-			"createDate", OAuthConnection::getCreateDate);
+			"createDate",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getCreateDate();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"createDate",
-			(BiConsumer<OAuthConnection, Date>)OAuthConnection::setCreateDate);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object createDate) {
+
+					oAuthConnection.setCreateDate((Date)createDate);
+				}
+
+			});
 		attributeGetterFunctions.put(
-			"modifiedDate", OAuthConnection::getModifiedDate);
+			"modifiedDate",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getModifiedDate();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"modifiedDate",
-			(BiConsumer<OAuthConnection, Date>)
-				OAuthConnection::setModifiedDate);
-		attributeGetterFunctions.put("enabled", OAuthConnection::getEnabled);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object modifiedDate) {
+
+					oAuthConnection.setModifiedDate((Date)modifiedDate);
+				}
+
+			});
+		attributeGetterFunctions.put(
+			"enabled",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getEnabled();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"enabled",
-			(BiConsumer<OAuthConnection, Boolean>)OAuthConnection::setEnabled);
-		attributeGetterFunctions.put("name", OAuthConnection::getName);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object enabled) {
+
+					oAuthConnection.setEnabled((Boolean)enabled);
+				}
+
+			});
+		attributeGetterFunctions.put(
+			"name",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getName();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"name",
-			(BiConsumer<OAuthConnection, String>)OAuthConnection::setName);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object name) {
+
+					oAuthConnection.setName((String)name);
+				}
+
+			});
 		attributeGetterFunctions.put(
-			"description", OAuthConnection::getDescription);
+			"description",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getDescription();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"description",
-			(BiConsumer<OAuthConnection, String>)
-				OAuthConnection::setDescription);
-		attributeGetterFunctions.put("iconId", OAuthConnection::getIconId);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object description) {
+
+					oAuthConnection.setDescription((String)description);
+				}
+
+			});
+		attributeGetterFunctions.put(
+			"iconId",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getIconId();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"iconId",
-			(BiConsumer<OAuthConnection, Long>)OAuthConnection::setIconId);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object iconId) {
+
+					oAuthConnection.setIconId((Long)iconId);
+				}
+
+			});
 		attributeGetterFunctions.put(
-			"oAuthVersion", OAuthConnection::getOAuthVersion);
+			"oAuthVersion",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getOAuthVersion();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"oAuthVersion",
-			(BiConsumer<OAuthConnection, Integer>)
-				OAuthConnection::setOAuthVersion);
-		attributeGetterFunctions.put("key", OAuthConnection::getKey);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object oAuthVersion) {
+
+					oAuthConnection.setOAuthVersion((Integer)oAuthVersion);
+				}
+
+			});
+		attributeGetterFunctions.put(
+			"key",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getKey();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"key",
-			(BiConsumer<OAuthConnection, String>)OAuthConnection::setKey);
-		attributeGetterFunctions.put("secret", OAuthConnection::getSecret);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object key) {
+
+					oAuthConnection.setKey((String)key);
+				}
+
+			});
+		attributeGetterFunctions.put(
+			"secret",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getSecret();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"secret",
-			(BiConsumer<OAuthConnection, String>)OAuthConnection::setSecret);
-		attributeGetterFunctions.put("scope", OAuthConnection::getScope);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object secret) {
+
+					oAuthConnection.setSecret((String)secret);
+				}
+
+			});
+		attributeGetterFunctions.put(
+			"scope",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getScope();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"scope",
-			(BiConsumer<OAuthConnection, String>)OAuthConnection::setScope);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object scope) {
+
+					oAuthConnection.setScope((String)scope);
+				}
+
+			});
 		attributeGetterFunctions.put(
-			"authorizeURL", OAuthConnection::getAuthorizeURL);
+			"authorizeURL",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getAuthorizeURL();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"authorizeURL",
-			(BiConsumer<OAuthConnection, String>)
-				OAuthConnection::setAuthorizeURL);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object authorizeURL) {
+
+					oAuthConnection.setAuthorizeURL((String)authorizeURL);
+				}
+
+			});
 		attributeGetterFunctions.put(
-			"accessTokenURL", OAuthConnection::getAccessTokenURL);
+			"accessTokenURL",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getAccessTokenURL();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"accessTokenURL",
-			(BiConsumer<OAuthConnection, String>)
-				OAuthConnection::setAccessTokenURL);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object accessTokenURL) {
+
+					oAuthConnection.setAccessTokenURL((String)accessTokenURL);
+				}
+
+			});
 		attributeGetterFunctions.put(
-			"accessTokenVerb", OAuthConnection::getAccessTokenVerb);
+			"accessTokenVerb",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getAccessTokenVerb();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"accessTokenVerb",
-			(BiConsumer<OAuthConnection, Integer>)
-				OAuthConnection::setAccessTokenVerb);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object accessTokenVerb) {
+
+					oAuthConnection.setAccessTokenVerb(
+						(Integer)accessTokenVerb);
+				}
+
+			});
 		attributeGetterFunctions.put(
 			"accessTokenExtractorType",
-			OAuthConnection::getAccessTokenExtractorType);
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getAccessTokenExtractorType();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"accessTokenExtractorType",
-			(BiConsumer<OAuthConnection, Integer>)
-				OAuthConnection::setAccessTokenExtractorType);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection,
+					Object accessTokenExtractorType) {
+
+					oAuthConnection.setAccessTokenExtractorType(
+						(Integer)accessTokenExtractorType);
+				}
+
+			});
 		attributeGetterFunctions.put(
-			"requestTokenURL", OAuthConnection::getRequestTokenURL);
+			"requestTokenURL",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getRequestTokenURL();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"requestTokenURL",
-			(BiConsumer<OAuthConnection, String>)
-				OAuthConnection::setRequestTokenURL);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object requestTokenURL) {
+
+					oAuthConnection.setRequestTokenURL((String)requestTokenURL);
+				}
+
+			});
 		attributeGetterFunctions.put(
-			"requestTokenVerb", OAuthConnection::getRequestTokenVerb);
+			"requestTokenVerb",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getRequestTokenVerb();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"requestTokenVerb",
-			(BiConsumer<OAuthConnection, Integer>)
-				OAuthConnection::setRequestTokenVerb);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object requestTokenVerb) {
+
+					oAuthConnection.setRequestTokenVerb(
+						(Integer)requestTokenVerb);
+				}
+
+			});
 		attributeGetterFunctions.put(
-			"signatureServiceType", OAuthConnection::getSignatureServiceType);
+			"signatureServiceType",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getSignatureServiceType();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"signatureServiceType",
-			(BiConsumer<OAuthConnection, Integer>)
-				OAuthConnection::setSignatureServiceType);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection,
+					Object signatureServiceType) {
+
+					oAuthConnection.setSignatureServiceType(
+						(Integer)signatureServiceType);
+				}
+
+			});
 		attributeGetterFunctions.put(
-			"redirectURL", OAuthConnection::getRedirectURL);
+			"redirectURL",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getRedirectURL();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"redirectURL",
-			(BiConsumer<OAuthConnection, String>)
-				OAuthConnection::setRedirectURL);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection, Object redirectURL) {
+
+					oAuthConnection.setRedirectURL((String)redirectURL);
+				}
+
+			});
 		attributeGetterFunctions.put(
-			"socialAccountIdURL", OAuthConnection::getSocialAccountIdURL);
+			"socialAccountIdURL",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getSocialAccountIdURL();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"socialAccountIdURL",
-			(BiConsumer<OAuthConnection, String>)
-				OAuthConnection::setSocialAccountIdURL);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection,
+					Object socialAccountIdURL) {
+
+					oAuthConnection.setSocialAccountIdURL(
+						(String)socialAccountIdURL);
+				}
+
+			});
 		attributeGetterFunctions.put(
 			"socialAccountIdURLVerb",
-			OAuthConnection::getSocialAccountIdURLVerb);
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getSocialAccountIdURLVerb();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"socialAccountIdURLVerb",
-			(BiConsumer<OAuthConnection, Integer>)
-				OAuthConnection::setSocialAccountIdURLVerb);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection,
+					Object socialAccountIdURLVerb) {
+
+					oAuthConnection.setSocialAccountIdURLVerb(
+						(Integer)socialAccountIdURLVerb);
+				}
+
+			});
 		attributeGetterFunctions.put(
-			"socialAccountIdField", OAuthConnection::getSocialAccountIdField);
+			"socialAccountIdField",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getSocialAccountIdField();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"socialAccountIdField",
-			(BiConsumer<OAuthConnection, String>)
-				OAuthConnection::setSocialAccountIdField);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection,
+					Object socialAccountIdField) {
+
+					oAuthConnection.setSocialAccountIdField(
+						(String)socialAccountIdField);
+				}
+
+			});
 		attributeGetterFunctions.put(
-			"socialAccountIdType", OAuthConnection::getSocialAccountIdType);
+			"socialAccountIdType",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getSocialAccountIdType();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"socialAccountIdType",
-			(BiConsumer<OAuthConnection, Integer>)
-				OAuthConnection::setSocialAccountIdType);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection,
+					Object socialAccountIdType) {
+
+					oAuthConnection.setSocialAccountIdType(
+						(Integer)socialAccountIdType);
+				}
+
+			});
 		attributeGetterFunctions.put(
-			"socialAccountIdScript", OAuthConnection::getSocialAccountIdScript);
+			"socialAccountIdScript",
+			new Function<OAuthConnection, Object>() {
+
+				@Override
+				public Object apply(OAuthConnection oAuthConnection) {
+					return oAuthConnection.getSocialAccountIdScript();
+				}
+
+			});
 		attributeSetterBiConsumers.put(
 			"socialAccountIdScript",
-			(BiConsumer<OAuthConnection, String>)
-				OAuthConnection::setSocialAccountIdScript);
+			new BiConsumer<OAuthConnection, Object>() {
+
+				@Override
+				public void accept(
+					OAuthConnection oAuthConnection,
+					Object socialAccountIdScript) {
+
+					oAuthConnection.setSocialAccountIdScript(
+						(String)socialAccountIdScript);
+				}
+
+			});
 
 		_attributeGetterFunctions = Collections.unmodifiableMap(
 			attributeGetterFunctions);
@@ -902,12 +1361,12 @@ public class OAuthConnectionModelImpl
 
 	@Override
 	public boolean isEntityCacheEnabled() {
-		return _entityCacheEnabled;
+		return ENTITY_CACHE_ENABLED;
 	}
 
 	@Override
 	public boolean isFinderCacheEnabled() {
-		return _finderCacheEnabled;
+		return FINDER_CACHE_ENABLED;
 	}
 
 	@Override
@@ -1154,9 +1613,6 @@ public class OAuthConnectionModelImpl
 			_escapedModelProxyProviderFunction = _getProxyProviderFunction();
 
 	}
-
-	private static boolean _entityCacheEnabled;
-	private static boolean _finderCacheEnabled;
 
 	private long _oAuthConnectionId;
 	private long _companyId;

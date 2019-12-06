@@ -14,7 +14,7 @@
 
 package com.liferay.oauthlogin.model.impl;
 
-import org.osgi.annotation.versioning.ProviderType;
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * The extended model implementation for the OAuthConnection service. Represents a row in the &quot;OAuthLogin_OAuthConnection&quot; database table, with each column mapped to a property of this class.

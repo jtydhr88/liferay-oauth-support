@@ -14,14 +14,13 @@
 
 package com.liferay.oauthlogin.service.persistence.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.oauthlogin.exception.NoSuchOAuthConnectionException;
 import com.liferay.oauthlogin.model.OAuthConnection;
 import com.liferay.oauthlogin.model.impl.OAuthConnectionImpl;
 import com.liferay.oauthlogin.model.impl.OAuthConnectionModelImpl;
 import com.liferay.oauthlogin.service.persistence.OAuthConnectionPersistence;
-import com.liferay.oauthlogin.service.persistence.impl.constants.OAuthLoginPersistenceConstants;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
@@ -29,36 +28,31 @@ import com.liferay.portal.kernel.dao.orm.Query;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import java.io.Serializable;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.sql.DataSource;
-
-import org.osgi.annotation.versioning.ProviderType;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * The persistence implementation for the o auth connection service.
@@ -70,7 +64,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Brian Wing Shun Chan
  * @generated
  */
-@Component(service = OAuthConnectionPersistence.class)
 @ProviderType
 public class OAuthConnectionPersistenceImpl
 	extends BasePersistenceImpl<OAuthConnection>
@@ -605,14 +598,23 @@ public class OAuthConnectionPersistenceImpl
 	public OAuthConnectionPersistenceImpl() {
 		setModelClass(OAuthConnection.class);
 
-		setModelImplClass(OAuthConnectionImpl.class);
-		setModelPKClass(long.class);
-
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
 		dbColumnNames.put("key", "key_");
 
-		setDBColumnNames(dbColumnNames);
+		try {
+			Field field = BasePersistenceImpl.class.getDeclaredField(
+				"_dbColumnNames");
+
+			field.setAccessible(true);
+
+			field.set(this, dbColumnNames);
+		}
+		catch (Exception e) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(e, e);
+			}
+		}
 	}
 
 	/**
@@ -623,8 +625,9 @@ public class OAuthConnectionPersistenceImpl
 	@Override
 	public void cacheResult(OAuthConnection oAuthConnection) {
 		entityCache.putResult(
-			entityCacheEnabled, OAuthConnectionImpl.class,
-			oAuthConnection.getPrimaryKey(), oAuthConnection);
+			OAuthConnectionModelImpl.ENTITY_CACHE_ENABLED,
+			OAuthConnectionImpl.class, oAuthConnection.getPrimaryKey(),
+			oAuthConnection);
 
 		oAuthConnection.resetOriginalValues();
 	}
@@ -638,7 +641,8 @@ public class OAuthConnectionPersistenceImpl
 	public void cacheResult(List<OAuthConnection> oAuthConnections) {
 		for (OAuthConnection oAuthConnection : oAuthConnections) {
 			if (entityCache.getResult(
-					entityCacheEnabled, OAuthConnectionImpl.class,
+					OAuthConnectionModelImpl.ENTITY_CACHE_ENABLED,
+					OAuthConnectionImpl.class,
 					oAuthConnection.getPrimaryKey()) == null) {
 
 				cacheResult(oAuthConnection);
@@ -675,8 +679,8 @@ public class OAuthConnectionPersistenceImpl
 	@Override
 	public void clearCache(OAuthConnection oAuthConnection) {
 		entityCache.removeResult(
-			entityCacheEnabled, OAuthConnectionImpl.class,
-			oAuthConnection.getPrimaryKey());
+			OAuthConnectionModelImpl.ENTITY_CACHE_ENABLED,
+			OAuthConnectionImpl.class, oAuthConnection.getPrimaryKey());
 
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
@@ -689,8 +693,8 @@ public class OAuthConnectionPersistenceImpl
 
 		for (OAuthConnection oAuthConnection : oAuthConnections) {
 			entityCache.removeResult(
-				entityCacheEnabled, OAuthConnectionImpl.class,
-				oAuthConnection.getPrimaryKey());
+				OAuthConnectionModelImpl.ENTITY_CACHE_ENABLED,
+				OAuthConnectionImpl.class, oAuthConnection.getPrimaryKey());
 		}
 	}
 
@@ -871,7 +875,7 @@ public class OAuthConnectionPersistenceImpl
 
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 
-		if (!_columnBitmaskEnabled) {
+		if (!OAuthConnectionModelImpl.COLUMN_BITMASK_ENABLED) {
 			finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 		}
 		else if (isNew) {
@@ -907,8 +911,9 @@ public class OAuthConnectionPersistenceImpl
 		}
 
 		entityCache.putResult(
-			entityCacheEnabled, OAuthConnectionImpl.class,
-			oAuthConnection.getPrimaryKey(), oAuthConnection, false);
+			OAuthConnectionModelImpl.ENTITY_CACHE_ENABLED,
+			OAuthConnectionImpl.class, oAuthConnection.getPrimaryKey(),
+			oAuthConnection, false);
 
 		oAuthConnection.resetOriginalValues();
 
@@ -957,12 +962,163 @@ public class OAuthConnectionPersistenceImpl
 	/**
 	 * Returns the o auth connection with the primary key or returns <code>null</code> if it could not be found.
 	 *
+	 * @param primaryKey the primary key of the o auth connection
+	 * @return the o auth connection, or <code>null</code> if a o auth connection with the primary key could not be found
+	 */
+	@Override
+	public OAuthConnection fetchByPrimaryKey(Serializable primaryKey) {
+		Serializable serializable = entityCache.getResult(
+			OAuthConnectionModelImpl.ENTITY_CACHE_ENABLED,
+			OAuthConnectionImpl.class, primaryKey);
+
+		if (serializable == nullModel) {
+			return null;
+		}
+
+		OAuthConnection oAuthConnection = (OAuthConnection)serializable;
+
+		if (oAuthConnection == null) {
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				oAuthConnection = (OAuthConnection)session.get(
+					OAuthConnectionImpl.class, primaryKey);
+
+				if (oAuthConnection != null) {
+					cacheResult(oAuthConnection);
+				}
+				else {
+					entityCache.putResult(
+						OAuthConnectionModelImpl.ENTITY_CACHE_ENABLED,
+						OAuthConnectionImpl.class, primaryKey, nullModel);
+				}
+			}
+			catch (Exception e) {
+				entityCache.removeResult(
+					OAuthConnectionModelImpl.ENTITY_CACHE_ENABLED,
+					OAuthConnectionImpl.class, primaryKey);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return oAuthConnection;
+	}
+
+	/**
+	 * Returns the o auth connection with the primary key or returns <code>null</code> if it could not be found.
+	 *
 	 * @param oAuthConnectionId the primary key of the o auth connection
 	 * @return the o auth connection, or <code>null</code> if a o auth connection with the primary key could not be found
 	 */
 	@Override
 	public OAuthConnection fetchByPrimaryKey(long oAuthConnectionId) {
 		return fetchByPrimaryKey((Serializable)oAuthConnectionId);
+	}
+
+	@Override
+	public Map<Serializable, OAuthConnection> fetchByPrimaryKeys(
+		Set<Serializable> primaryKeys) {
+
+		if (primaryKeys.isEmpty()) {
+			return Collections.emptyMap();
+		}
+
+		Map<Serializable, OAuthConnection> map =
+			new HashMap<Serializable, OAuthConnection>();
+
+		if (primaryKeys.size() == 1) {
+			Iterator<Serializable> iterator = primaryKeys.iterator();
+
+			Serializable primaryKey = iterator.next();
+
+			OAuthConnection oAuthConnection = fetchByPrimaryKey(primaryKey);
+
+			if (oAuthConnection != null) {
+				map.put(primaryKey, oAuthConnection);
+			}
+
+			return map;
+		}
+
+		Set<Serializable> uncachedPrimaryKeys = null;
+
+		for (Serializable primaryKey : primaryKeys) {
+			Serializable serializable = entityCache.getResult(
+				OAuthConnectionModelImpl.ENTITY_CACHE_ENABLED,
+				OAuthConnectionImpl.class, primaryKey);
+
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
+
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (OAuthConnection)serializable);
+				}
+			}
+		}
+
+		if (uncachedPrimaryKeys == null) {
+			return map;
+		}
+
+		StringBundler query = new StringBundler(
+			uncachedPrimaryKeys.size() * 2 + 1);
+
+		query.append(_SQL_SELECT_OAUTHCONNECTION_WHERE_PKS_IN);
+
+		for (Serializable primaryKey : uncachedPrimaryKeys) {
+			query.append((long)primaryKey);
+
+			query.append(",");
+		}
+
+		query.setIndex(query.index() - 1);
+
+		query.append(")");
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = session.createQuery(sql);
+
+			for (OAuthConnection oAuthConnection :
+					(List<OAuthConnection>)q.list()) {
+
+				map.put(oAuthConnection.getPrimaryKeyObj(), oAuthConnection);
+
+				cacheResult(oAuthConnection);
+
+				uncachedPrimaryKeys.remove(oAuthConnection.getPrimaryKeyObj());
+			}
+
+			for (Serializable primaryKey : uncachedPrimaryKeys) {
+				entityCache.putResult(
+					OAuthConnectionModelImpl.ENTITY_CACHE_ENABLED,
+					OAuthConnectionImpl.class, primaryKey, nullModel);
+			}
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+
+		return map;
 	}
 
 	/**
@@ -1166,21 +1322,6 @@ public class OAuthConnectionPersistenceImpl
 	}
 
 	@Override
-	protected EntityCache getEntityCache() {
-		return entityCache;
-	}
-
-	@Override
-	protected String getPKDBName() {
-		return "oAuthConnectionId";
-	}
-
-	@Override
-	protected String getSelectSQL() {
-		return _SQL_SELECT_OAUTHCONNECTION;
-	}
-
-	@Override
 	protected Map<String, Integer> getTableColumnsMap() {
 		return OAuthConnectionModelImpl.TABLE_COLUMNS_MAP;
 	}
@@ -1188,96 +1329,70 @@ public class OAuthConnectionPersistenceImpl
 	/**
 	 * Initializes the o auth connection persistence.
 	 */
-	@Activate
-	public void activate() {
-		OAuthConnectionModelImpl.setEntityCacheEnabled(entityCacheEnabled);
-		OAuthConnectionModelImpl.setFinderCacheEnabled(finderCacheEnabled);
-
+	public void afterPropertiesSet() {
 		_finderPathWithPaginationFindAll = new FinderPath(
-			entityCacheEnabled, finderCacheEnabled, OAuthConnectionImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findAll", new String[0]);
+			OAuthConnectionModelImpl.ENTITY_CACHE_ENABLED,
+			OAuthConnectionModelImpl.FINDER_CACHE_ENABLED,
+			OAuthConnectionImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findAll", new String[0]);
 
 		_finderPathWithoutPaginationFindAll = new FinderPath(
-			entityCacheEnabled, finderCacheEnabled, OAuthConnectionImpl.class,
+			OAuthConnectionModelImpl.ENTITY_CACHE_ENABLED,
+			OAuthConnectionModelImpl.FINDER_CACHE_ENABLED,
+			OAuthConnectionImpl.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findAll",
 			new String[0]);
 
 		_finderPathCountAll = new FinderPath(
-			entityCacheEnabled, finderCacheEnabled, Long.class,
+			OAuthConnectionModelImpl.ENTITY_CACHE_ENABLED,
+			OAuthConnectionModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll",
 			new String[0]);
 
 		_finderPathWithPaginationFindByEnabled = new FinderPath(
-			entityCacheEnabled, finderCacheEnabled, OAuthConnectionImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByEnabled",
+			OAuthConnectionModelImpl.ENTITY_CACHE_ENABLED,
+			OAuthConnectionModelImpl.FINDER_CACHE_ENABLED,
+			OAuthConnectionImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByEnabled",
 			new String[] {
 				Boolean.class.getName(), Integer.class.getName(),
 				Integer.class.getName(), OrderByComparator.class.getName()
 			});
 
 		_finderPathWithoutPaginationFindByEnabled = new FinderPath(
-			entityCacheEnabled, finderCacheEnabled, OAuthConnectionImpl.class,
+			OAuthConnectionModelImpl.ENTITY_CACHE_ENABLED,
+			OAuthConnectionModelImpl.FINDER_CACHE_ENABLED,
+			OAuthConnectionImpl.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByEnabled",
 			new String[] {Boolean.class.getName()},
 			OAuthConnectionModelImpl.ENABLED_COLUMN_BITMASK |
 			OAuthConnectionModelImpl.CREATEDATE_COLUMN_BITMASK);
 
 		_finderPathCountByEnabled = new FinderPath(
-			entityCacheEnabled, finderCacheEnabled, Long.class,
+			OAuthConnectionModelImpl.ENTITY_CACHE_ENABLED,
+			OAuthConnectionModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByEnabled",
 			new String[] {Boolean.class.getName()});
 	}
 
-	@Deactivate
-	public void deactivate() {
+	public void destroy() {
 		entityCache.removeCache(OAuthConnectionImpl.class.getName());
 		finderCache.removeCache(FINDER_CLASS_NAME_ENTITY);
 		finderCache.removeCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
-	@Override
-	@Reference(
-		target = OAuthLoginPersistenceConstants.ORIGIN_BUNDLE_SYMBOLIC_NAME_FILTER,
-		unbind = "-"
-	)
-	public void setConfiguration(Configuration configuration) {
-		super.setConfiguration(configuration);
-
-		_columnBitmaskEnabled = GetterUtil.getBoolean(
-			configuration.get(
-				"value.object.column.bitmask.enabled.com.liferay.oauthlogin.model.OAuthConnection"),
-			true);
-	}
-
-	@Override
-	@Reference(
-		target = OAuthLoginPersistenceConstants.ORIGIN_BUNDLE_SYMBOLIC_NAME_FILTER,
-		unbind = "-"
-	)
-	public void setDataSource(DataSource dataSource) {
-		super.setDataSource(dataSource);
-	}
-
-	@Override
-	@Reference(
-		target = OAuthLoginPersistenceConstants.ORIGIN_BUNDLE_SYMBOLIC_NAME_FILTER,
-		unbind = "-"
-	)
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		super.setSessionFactory(sessionFactory);
-	}
-
-	private boolean _columnBitmaskEnabled;
-
-	@Reference
+	@ServiceReference(type = EntityCache.class)
 	protected EntityCache entityCache;
 
-	@Reference
+	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
 
 	private static final String _SQL_SELECT_OAUTHCONNECTION =
 		"SELECT oAuthConnection FROM OAuthConnection oAuthConnection";
+
+	private static final String _SQL_SELECT_OAUTHCONNECTION_WHERE_PKS_IN =
+		"SELECT oAuthConnection FROM OAuthConnection oAuthConnection WHERE oAuthConnectionId IN (";
 
 	private static final String _SQL_SELECT_OAUTHCONNECTION_WHERE =
 		"SELECT oAuthConnection FROM OAuthConnection oAuthConnection WHERE ";
@@ -1301,14 +1416,5 @@ public class OAuthConnectionPersistenceImpl
 
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"key"});
-
-	static {
-		try {
-			Class.forName(OAuthLoginPersistenceConstants.class.getName());
-		}
-		catch (ClassNotFoundException cnfe) {
-			throw new ExceptionInInitializerError(cnfe);
-		}
-	}
 
 }

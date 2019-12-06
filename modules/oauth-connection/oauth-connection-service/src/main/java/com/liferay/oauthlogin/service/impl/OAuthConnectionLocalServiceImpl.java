@@ -17,14 +17,12 @@ package com.liferay.oauthlogin.service.impl;
 import com.liferay.oauthlogin.exception.*;
 import com.liferay.oauthlogin.model.OAuthConnection;
 import com.liferay.oauthlogin.service.base.OAuthConnectionLocalServiceBaseImpl;
-import com.liferay.portal.aop.AopService;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.Validator;
-import org.osgi.service.component.annotations.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,10 +42,6 @@ import java.util.List;
  * @author Brian Wing Shun Chan
  * @see OAuthConnectionLocalServiceBaseImpl
  */
-@Component(
-	property = "model.class.name=com.liferay.oauthlogin.model.OAuthConnection",
-	service = AopService.class
-)
 public class OAuthConnectionLocalServiceImpl
 	extends OAuthConnectionLocalServiceBaseImpl {
 

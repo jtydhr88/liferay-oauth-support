@@ -14,10 +14,10 @@
 
 package com.liferay.oauthlogin.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.oauthlogin.model.OAuthConnection;
 import com.liferay.oauthlogin.service.OAuthConnectionLocalServiceUtil;
-
-import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * The extended model base implementation for the OAuthConnection service. Represents a row in the &quot;OAuthLogin_OAuthConnection&quot; database table, with each column mapped to a property of this class.

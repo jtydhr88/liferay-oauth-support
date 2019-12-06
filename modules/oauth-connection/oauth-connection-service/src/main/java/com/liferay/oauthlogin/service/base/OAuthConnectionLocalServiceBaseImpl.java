@@ -14,10 +14,12 @@
 
 package com.liferay.oauthlogin.service.base;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.oauthlogin.model.OAuthConnection;
 import com.liferay.oauthlogin.service.OAuthConnectionLocalService;
 import com.liferay.oauthlogin.service.persistence.OAuthConnectionPersistence;
-import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
@@ -35,19 +37,20 @@ import com.liferay.portal.kernel.module.framework.service.IdentifiableOSGiServic
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalServiceImpl;
-import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.service.PersistedModelLocalServiceRegistry;
+import com.liferay.portal.kernel.service.persistence.ClassNamePersistence;
+import com.liferay.portal.kernel.service.persistence.ImagePersistence;
+import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import java.io.Serializable;
 
 import java.util.List;
 
 import javax.sql.DataSource;
-
-import org.osgi.annotation.versioning.ProviderType;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * Provides the base implementation for the o auth connection local service.
@@ -63,8 +66,7 @@ import org.osgi.service.component.annotations.Reference;
 @ProviderType
 public abstract class OAuthConnectionLocalServiceBaseImpl
 	extends BaseLocalServiceImpl
-	implements OAuthConnectionLocalService, AopService,
-			   IdentifiableOSGiService {
+	implements OAuthConnectionLocalService, IdentifiableOSGiService {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -334,17 +336,224 @@ public abstract class OAuthConnectionLocalServiceBaseImpl
 		return oAuthConnectionPersistence.update(oAuthConnection);
 	}
 
-	@Override
-	public Class<?>[] getAopInterfaces() {
-		return new Class<?>[] {
-			OAuthConnectionLocalService.class, IdentifiableOSGiService.class,
-			PersistedModelLocalService.class
-		};
+	/**
+	 * Returns the o auth connection local service.
+	 *
+	 * @return the o auth connection local service
+	 */
+	public OAuthConnectionLocalService getOAuthConnectionLocalService() {
+		return oAuthConnectionLocalService;
 	}
 
-	@Override
-	public void setAopProxy(Object aopProxy) {
-		oAuthConnectionLocalService = (OAuthConnectionLocalService)aopProxy;
+	/**
+	 * Sets the o auth connection local service.
+	 *
+	 * @param oAuthConnectionLocalService the o auth connection local service
+	 */
+	public void setOAuthConnectionLocalService(
+		OAuthConnectionLocalService oAuthConnectionLocalService) {
+
+		this.oAuthConnectionLocalService = oAuthConnectionLocalService;
+	}
+
+	/**
+	 * Returns the o auth connection persistence.
+	 *
+	 * @return the o auth connection persistence
+	 */
+	public OAuthConnectionPersistence getOAuthConnectionPersistence() {
+		return oAuthConnectionPersistence;
+	}
+
+	/**
+	 * Sets the o auth connection persistence.
+	 *
+	 * @param oAuthConnectionPersistence the o auth connection persistence
+	 */
+	public void setOAuthConnectionPersistence(
+		OAuthConnectionPersistence oAuthConnectionPersistence) {
+
+		this.oAuthConnectionPersistence = oAuthConnectionPersistence;
+	}
+
+	/**
+	 * Returns the counter local service.
+	 *
+	 * @return the counter local service
+	 */
+	public com.liferay.counter.kernel.service.CounterLocalService
+		getCounterLocalService() {
+
+		return counterLocalService;
+	}
+
+	/**
+	 * Sets the counter local service.
+	 *
+	 * @param counterLocalService the counter local service
+	 */
+	public void setCounterLocalService(
+		com.liferay.counter.kernel.service.CounterLocalService
+			counterLocalService) {
+
+		this.counterLocalService = counterLocalService;
+	}
+
+	/**
+	 * Returns the class name local service.
+	 *
+	 * @return the class name local service
+	 */
+	public com.liferay.portal.kernel.service.ClassNameLocalService
+		getClassNameLocalService() {
+
+		return classNameLocalService;
+	}
+
+	/**
+	 * Sets the class name local service.
+	 *
+	 * @param classNameLocalService the class name local service
+	 */
+	public void setClassNameLocalService(
+		com.liferay.portal.kernel.service.ClassNameLocalService
+			classNameLocalService) {
+
+		this.classNameLocalService = classNameLocalService;
+	}
+
+	/**
+	 * Returns the class name persistence.
+	 *
+	 * @return the class name persistence
+	 */
+	public ClassNamePersistence getClassNamePersistence() {
+		return classNamePersistence;
+	}
+
+	/**
+	 * Sets the class name persistence.
+	 *
+	 * @param classNamePersistence the class name persistence
+	 */
+	public void setClassNamePersistence(
+		ClassNamePersistence classNamePersistence) {
+
+		this.classNamePersistence = classNamePersistence;
+	}
+
+	/**
+	 * Returns the image local service.
+	 *
+	 * @return the image local service
+	 */
+	public com.liferay.portal.kernel.service.ImageLocalService
+		getImageLocalService() {
+
+		return imageLocalService;
+	}
+
+	/**
+	 * Sets the image local service.
+	 *
+	 * @param imageLocalService the image local service
+	 */
+	public void setImageLocalService(
+		com.liferay.portal.kernel.service.ImageLocalService imageLocalService) {
+
+		this.imageLocalService = imageLocalService;
+	}
+
+	/**
+	 * Returns the image persistence.
+	 *
+	 * @return the image persistence
+	 */
+	public ImagePersistence getImagePersistence() {
+		return imagePersistence;
+	}
+
+	/**
+	 * Sets the image persistence.
+	 *
+	 * @param imagePersistence the image persistence
+	 */
+	public void setImagePersistence(ImagePersistence imagePersistence) {
+		this.imagePersistence = imagePersistence;
+	}
+
+	/**
+	 * Returns the resource local service.
+	 *
+	 * @return the resource local service
+	 */
+	public com.liferay.portal.kernel.service.ResourceLocalService
+		getResourceLocalService() {
+
+		return resourceLocalService;
+	}
+
+	/**
+	 * Sets the resource local service.
+	 *
+	 * @param resourceLocalService the resource local service
+	 */
+	public void setResourceLocalService(
+		com.liferay.portal.kernel.service.ResourceLocalService
+			resourceLocalService) {
+
+		this.resourceLocalService = resourceLocalService;
+	}
+
+	/**
+	 * Returns the user local service.
+	 *
+	 * @return the user local service
+	 */
+	public com.liferay.portal.kernel.service.UserLocalService
+		getUserLocalService() {
+
+		return userLocalService;
+	}
+
+	/**
+	 * Sets the user local service.
+	 *
+	 * @param userLocalService the user local service
+	 */
+	public void setUserLocalService(
+		com.liferay.portal.kernel.service.UserLocalService userLocalService) {
+
+		this.userLocalService = userLocalService;
+	}
+
+	/**
+	 * Returns the user persistence.
+	 *
+	 * @return the user persistence
+	 */
+	public UserPersistence getUserPersistence() {
+		return userPersistence;
+	}
+
+	/**
+	 * Sets the user persistence.
+	 *
+	 * @param userPersistence the user persistence
+	 */
+	public void setUserPersistence(UserPersistence userPersistence) {
+		this.userPersistence = userPersistence;
+	}
+
+	public void afterPropertiesSet() {
+		persistedModelLocalServiceRegistry.register(
+			"com.liferay.oauthlogin.model.OAuthConnection",
+			oAuthConnectionLocalService);
+	}
+
+	public void destroy() {
+		persistedModelLocalServiceRegistry.unregister(
+			"com.liferay.oauthlogin.model.OAuthConnection");
 	}
 
 	/**
@@ -389,29 +598,53 @@ public abstract class OAuthConnectionLocalServiceBaseImpl
 		}
 	}
 
+	@BeanReference(type = OAuthConnectionLocalService.class)
 	protected OAuthConnectionLocalService oAuthConnectionLocalService;
 
-	@Reference
+	@BeanReference(type = OAuthConnectionPersistence.class)
 	protected OAuthConnectionPersistence oAuthConnectionPersistence;
 
-	@Reference
+	@ServiceReference(
+		type = com.liferay.counter.kernel.service.CounterLocalService.class
+	)
 	protected com.liferay.counter.kernel.service.CounterLocalService
 		counterLocalService;
 
-	@Reference
+	@ServiceReference(
+		type = com.liferay.portal.kernel.service.ClassNameLocalService.class
+	)
 	protected com.liferay.portal.kernel.service.ClassNameLocalService
 		classNameLocalService;
 
-	@Reference
+	@ServiceReference(type = ClassNamePersistence.class)
+	protected ClassNamePersistence classNamePersistence;
+
+	@ServiceReference(
+		type = com.liferay.portal.kernel.service.ImageLocalService.class
+	)
 	protected com.liferay.portal.kernel.service.ImageLocalService
 		imageLocalService;
 
-	@Reference
+	@ServiceReference(type = ImagePersistence.class)
+	protected ImagePersistence imagePersistence;
+
+	@ServiceReference(
+		type = com.liferay.portal.kernel.service.ResourceLocalService.class
+	)
 	protected com.liferay.portal.kernel.service.ResourceLocalService
 		resourceLocalService;
 
-	@Reference
+	@ServiceReference(
+		type = com.liferay.portal.kernel.service.UserLocalService.class
+	)
 	protected com.liferay.portal.kernel.service.UserLocalService
 		userLocalService;
+
+	@ServiceReference(type = UserPersistence.class)
+	protected UserPersistence userPersistence;
+
+	@ServiceReference(type = PersistedModelLocalServiceRegistry.class)
+	protected PersistedModelLocalServiceRegistry
+		persistedModelLocalServiceRegistry;
 
 }

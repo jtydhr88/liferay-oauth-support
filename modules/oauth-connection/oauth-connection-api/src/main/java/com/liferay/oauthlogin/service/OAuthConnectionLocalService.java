@@ -14,6 +14,8 @@
 
 package com.liferay.oauthlogin.service;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.oauthlogin.exception.*;
 import com.liferay.oauthlogin.model.OAuthConnection;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -37,8 +39,6 @@ import java.io.File;
 import java.io.Serializable;
 
 import java.util.List;
-
-import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * Provides the local service interface for OAuthConnection. Methods of this
